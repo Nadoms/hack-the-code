@@ -6,7 +6,7 @@
 
 # Code
 
-class resource:
+class Resource:
 
     def __init__(
         self,
@@ -17,7 +17,7 @@ class resource:
         down_turns: int,
         lifetime_turns: int,
         power: int,
-        special_effect: str | None,
-        special_quality: int | None,
+        special_effect: str | None = None,
+        special_quality: int | None = None,
     ):
         pass
