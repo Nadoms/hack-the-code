@@ -2,7 +2,7 @@
 import argparse
 from pathlib import Path
 
-from game import Game
+from game import GomeJim
 from energy_resource import ResourceType
 
 # Variables
@@ -20,16 +20,16 @@ def parse_input(file: str):
         initial_money, rss_count, turn_count = [int(stat) for stat in game_setup.split()]
 
         # Read resources available
+        reg_len = 8
         rss = []
         for _ in range(rss_count):
             raw_rs = f.readline().strip().split()
-            base_rs_info = [int(stat) for stat in raw_rs[:7]]
-            if len(raw_rs) == 7:
-                rs = ResourceType(*base_rs_info)
-            else:
-                special_rs_info = raw_rs[7:]
-                rs = ResourceType(*base_rs_info, *special_rs_info)
-            rss.append(rs)
+            rs_info = [int(stat) for stat in raw_rs[:reg_len - 1]]
+            rs_info.append(raw_rs[reg_len - 1])
+            if len(raw_rs) > reg_len:
+                rs_info.append(int(raw_rs[reg_len]))
+
+            rss.append(ResourceType(*rs_info))
 
         # Read turn requirements
         turns = []
@@ -37,7 +37,7 @@ def parse_input(file: str):
             turn = [int(stat) for stat in f.readline().strip().split()]
             turns.append(turn)
 
-    game = Game(initial_money, rss, turns, output_file)
+    game = GomeJim(initial_money, rss, turns, output_file)
     return game
 
 
