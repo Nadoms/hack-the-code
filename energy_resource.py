@@ -8,7 +8,7 @@
 
 class ResourceType:
 
-    resources = []
+    resources = {}
 
     def __init__(
         self,
@@ -32,7 +32,7 @@ class ResourceType:
         self.special_effect = special_effect
         self.special_quality = special_quality
 
-        ResourceType.resources.append(self)
+        ResourceType.resources[self.id] = self
 
 
 class Resource:
@@ -44,7 +44,7 @@ class Resource:
         id: int,
     ):
         self.id = id
-        self.type : ResourceType = ResourceType.resources[id - 1]
+        self.type : ResourceType = ResourceType.resources[self.id]
 
         self.consumed = False
         self.is_on = False
@@ -52,12 +52,12 @@ class Resource:
         Resource.powered_buildings += self.type.power
 
     def activate(self) -> int:
-        self.consumed = True
         self.is_on = True
         return self.type.activation_cost
 
     def update(self):
-        if self.consumed:
+        if self.age >= self.type.lifetime_turns:
+            self.consumed = True
             return None
 
         turn = self.age % self.type.cycle_turns
@@ -67,4 +67,5 @@ class Resource:
             Resource.powered_buildings += self.type.power
             self.is_on = True
 
+        self.age += 1
         return self.type.maintenance_cost
